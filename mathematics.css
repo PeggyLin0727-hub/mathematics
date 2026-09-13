@@ -73,6 +73,14 @@ p.subtitle {
     display: none !important;
 }
 
+/* 輸入格鎖定時的灰底與禁用樣式 */
+input:disabled, button:disabled {
+    background-color: #e2e8f0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed !important;
+    border-color: #cbd5e0 !important;
+}
+
 /* ==========================================
    按鈕元件 (Buttons)
    ========================================== */
