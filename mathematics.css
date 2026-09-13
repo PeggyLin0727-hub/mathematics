@@ -282,7 +282,7 @@ p.subtitle {
 .morse-dot {
     width: 8px; 
     height: 8px; 
-    background: #e53e3e; 
+    background: #3182ce; 
     border-radius: 50%; 
     display: inline-block; 
     flex-shrink: 0;
@@ -291,7 +291,7 @@ p.subtitle {
 .morse-dash {
     width: 14px; 
     height: 6px; 
-    background: #3182ce; 
+    background: #e53e3e; 
     border-radius: 3px; 
     display: inline-block; 
     flex-shrink: 0;
