@@ -1,0 +1,449 @@
+/* ==========================================
+   全域與基礎樣式
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    /* 黑底背景 */
+    background-color: #0d1117;
+    color: #333333;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 靜態數學符號背景（黑底 + 透明白字數學符號） */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 白色數學符號 (∫, ∑, π, √, ∞, ±, ⊕, ∂, ≠, ≤, ≥) */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><text x="20" y="30" fill="rgba(255,255,255,0.12)" font-size="20">∑</text><text x="80" y="50" fill="rgba(255,255,255,0.12)" font-size="24">π</text><text x="140" y="30" fill="rgba(255,255,255,0.12)" font-size="22">∫</text><text x="40" y="90" fill="rgba(255,255,255,0.12)" font-size="26">√</text><text x="110" y="100" fill="rgba(255,255,255,0.12)" font-size="20">∞</text><text x="160" y="85" fill="rgba(255,255,255,0.12)" font-size="22">±</text><text x="15" y="150" fill="rgba(255,255,255,0.12)" font-size="24">≠</text><text x="75" y="160" fill="rgba(255,255,255,0.12)" font-size="20">∂</text><text x="135" y="150" fill="rgba(255,255,255,0.12)" font-size="22">⊕</text><text x="50" y="190" fill="rgba(255,255,255,0.12)" font-size="18">≤</text><text x="165" y="190" fill="rgba(255,255,255,0.12)" font-size="18">≥</text></svg>');
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 卡片容器：維持原本的白底黑字風格 */
+.card {
+    background: #ffffff;
+    color: #333333;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* 摩斯密碼頁面專用大尺寸 Card */
+.card-large {
+    max-width: 900px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+p.subtitle {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+}
+
+/* 通用隱藏類別 */
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================
+   按鈕元件 (Buttons)
+   ========================================== */
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #4A90E2;
+    color: white;
+}
+.btn-primary:hover { 
+    background-color: #357ABD; 
+}
+
+.btn-speed {
+    background-color: #FF6B6B;
+    color: white;
+}
+.btn-speed:hover { 
+    background-color: #EE5253; 
+}
+
+.btn-yes {
+    background-color: #2ECC71;
+    color: white;
+    flex: 1;
+    font-size: 1.6rem;
+}
+.btn-yes:hover { 
+    background-color: #27AE60; 
+}
+
+.btn-no {
+    background-color: #E74C3C;
+    color: white;
+    flex: 1;
+    font-size: 1.6rem;
+}
+.btn-no:hover { 
+    background-color: #C0392B; 
+}
+
+.btn-secondary {
+    background: #edf2f7; 
+    color: #2d3748; 
+    border: 1px solid #cbd5e0;
+}
+.btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+/* ==========================================
+   質數大挑戰 (primeNumbers.html) 專用樣式
+   ========================================== */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.timer-box {
+    color: #E74C3C;
+    font-size: 1.2rem;
+}
+
+.number-box {
+    background: #F8F9FA;
+    border-radius: 15px;
+    border: 2px dashed #CBD5E0;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 140px;
+}
+
+.number-display {
+    font-size: 5.5rem;
+    font-weight: 800;
+    color: #2C3E50;
+}
+
+.action-btns {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* 灰底遮罩及 SVG 控制 */
+.feedback-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease-in-out;
+    z-index: 99;
+}
+
+.feedback-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.feedback-icon {
+    width: 220px;
+    height: 220px;
+    display: none;
+}
+
+.feedback-icon.show {
+    display: block;
+}
+
+.score-display {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #4A90E2;
+    margin: 15px 0;
+}
+
+.feedback-text {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+/* ==========================================
+   摩斯密碼櫃 (primeNumbersByMordeCode.html) 專用樣式
+   ========================================== */
+/* 5x6 玻璃櫃 */
+.cabinet-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    background: #cbd5e0;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.grid-cell {
+    background: white;
+    border-radius: 8px;
+    min-height: 95px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.grid-cell:hover {
+    border: 2px solid #3182ce;
+}
+
+.letter-box {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2b6cb0;
+    height: 24px;
+}
+
+.morse-light {
+    display: flex;
+    gap: 4px;
+    height: 12px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.morse-dot {
+    width: 8px; 
+    height: 8px; 
+    background: #e53e3e; 
+    border-radius: 50%; 
+    display: inline-block; 
+    flex-shrink: 0;
+}
+
+.morse-dash {
+    width: 14px; 
+    height: 6px; 
+    background: #3182ce; 
+    border-radius: 3px; 
+    display: inline-block; 
+    flex-shrink: 0;
+}
+
+.balls-box {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ball {
+    background: #ecc94b;
+    color: #744210;
+    font-weight: bold;
+    font-size: 0.75rem;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 解鎖驗證區 */
+.answer-section {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.layer-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.layer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.layer-item label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #4A5568;
+}
+
+.layer-item input {
+    padding: 8px;
+    background: white;
+    color: #333;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 150px;
+}
+
+.key-section {
+    border-top: 2px dashed #cbd5e0;
+    margin-top: 15px;
+    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 摩斯密碼表通用樣式 */
+.morse-table-box {
+    background: #EDF2F7;
+    border: 1px solid #CBD5E0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    text-align: left;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.morse-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.morse-grid-alphabet {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px 10px;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+.morse-grid-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #CBD5E0;
+    font-weight: bold;
+}
+
+/* 彈窗 Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: white;
+    color: #333;
+    padding: 25px;
+    border-radius: 12px;
+    width: 650px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.modal-balls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 10px 0 15px;
+    flex-wrap: wrap;
+}
