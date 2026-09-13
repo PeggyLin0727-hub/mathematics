@@ -11,7 +11,7 @@
     <div class="card card-large">
         <h2 style="margin-top: 0;">五層摩斯密碼玻璃櫃</h2>
         <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px; text-align: left;">
-            提示：點擊含有黃球的櫃格，判定號碼為 <b><span class="morse-dot"></span> 質數</b> 或 <b><span class="morse-dash"></span> 合數</b>，輸入燈號並查表填寫英文字母！
+            提示：點擊含有黃球的櫃格，判定號碼為 <b><span class="morse-dash"></span> 質數</b> 或 <b><span class="morse-dot"></span> 合數</b>，輸入燈號並查表填寫英文字母！
         </p>
 
         <!-- 5x6 玻璃櫃區塊 -->
@@ -26,7 +26,7 @@
 
             <!-- 解鎖驗證區獨立展開的摩斯密碼表 -->
             <div id="answer-morse-table" class="morse-table-box hidden">
-                <b>摩斯密碼對照 (<span class="morse-dot"></span> 質數 / <span class="morse-dash"></span> 合數)</b>
+                <b>摩斯密碼對照 (<span class="morse-dash"></span> 質數 / <span class="morse-dot"></span> 合數)</b>
                 <div class="morse-grid-alphabet" id="ans-morse-alphabet"></div>
                 <div class="morse-grid-numbers" id="ans-morse-numbers"></div>
             </div>
@@ -34,32 +34,32 @@
             <div class="layer-inputs">
                 <div class="layer-item">
                     <label>最上層數字 (1)：</label>
-                    <input type="number" id="layer1">
+                    <input type="number" id="layer1" disabled oninput="checkUnlockState()">
                 </div>
                 <div class="layer-item">
                     <label>第二層數字 (2)：</label>
-                    <input type="number" id="layer2">
+                    <input type="number" id="layer2" disabled oninput="checkUnlockState()">
                 </div>
                 <div class="layer-item">
                     <label>第三層數字 (3)：</label>
-                    <input type="number" id="layer3">
+                    <input type="number" id="layer3" disabled oninput="checkUnlockState()">
                 </div>
                 <div class="layer-item">
                     <label>第四層數字 (4)：</label>
-                    <input type="number" id="layer4">
+                    <input type="number" id="layer4" disabled oninput="checkUnlockState()">
                 </div>
                 <div class="layer-item">
                     <label>最下層數字 (5)：</label>
-                    <input type="number" id="layer5">
+                    <input type="number" id="layer5" disabled oninput="checkUnlockState()">
                 </div>
             </div>
 
             <div class="key-section">
                 <label style="font-weight: bold; color: #2b6cb0;">🗝️ 開啟鑰匙編號：</label>
-                <input type="number" id="keyInput" style="width: 100px; padding: 8px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e0; font-weight: bold;">
+                <input type="number" id="keyInput" disabled style="width: 100px; padding: 8px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e0; font-weight: bold;">
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; padding: 10px; font-size: 1rem; margin-top: 15px;" onclick="checkAnswers()">驗證答案</button>
+            <button id="checkBtn" class="btn btn-primary" disabled style="width: 100%; padding: 10px; font-size: 1rem; margin-top: 15px;" onclick="checkAnswers()">驗證答案</button>
             <div id="unlock-result" style="margin-top: 15px; font-weight: bold; font-size: 1rem; text-align: center;"></div>
         </div>
     </div>
@@ -73,8 +73,8 @@
             </div>
 
             <!-- 彈窗內的圖像化摩斯密碼表 -->
-            <div id="modal-morse-table" class="morse-table-box hidden">
-                <b>摩斯密碼對照 (<span class="morse-dot"></span> 質數 / <span class="morse-dash"></span> 合數)</b>
+            <div id="modal-morse-table" class="morse-table-box">
+                <b>摩斯密碼對照 (<span class="morse-dash"></span> 質數 / <span class="morse-dot"></span> 合數)</b>
                 <div class="morse-grid-alphabet" id="modal-morse-alphabet"></div>
                 <div class="morse-grid-numbers" id="modal-morse-numbers"></div>
             </div>
@@ -85,8 +85,8 @@
             <div id="modal-morse-preview" class="morse-light" style="justify-content: center; margin-bottom: 10px; min-height: 12px;"></div>
             
             <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 15px;">
-                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dot')"><span class="morse-dot"></span> 質數</button>
-                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dash')"><span class="morse-dash"></span> 合數</button>
+                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dash')"><span class="morse-dash"></span> 質數</button>
+                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dot')"><span class="morse-dot"></span> 合數</button>
                 <button class="btn" style="padding: 6px 10px; background: #E2E8F0; font-size: 0.85rem;" onclick="clearMorseSymbol()">↺ 清除</button>
             </div>
 
@@ -125,13 +125,51 @@
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
+        // 嚴格對照原始圖片題目（D = Dash / 質數 / 條，C = Dot / 合數 / 點）
         const cabinetStructure = [
-            { letter: 'R', pattern: ['C', 'D', 'C'] }, { letter: '', pattern: [] }, { letter: 'Y', pattern: ['C', 'C', 'D', 'C'] }, { letter: 'T', pattern: ['C'] }, { letter: 'F', pattern: ['D', 'D', 'C', 'D'] }, { letter: 'O', pattern: ['C', 'C', 'C'] },
-            { letter: 'H', pattern: ['D', 'D', 'D', 'D'] }, { letter: 'T', pattern: ['C'] }, { letter: 'G', pattern: ['C', 'C', 'D'] }, { letter: 'E', pattern: ['D'] }, { letter: 'Y', pattern: ['C', 'C', 'D', 'C'] }, { letter: 'I', pattern: ['D', 'D'] },
-            { letter: 'L', pattern: ['D', 'C', 'D', 'D'] }, { letter: 'E', pattern: ['D'] }, { letter: 'E', pattern: ['D'] }, { letter: 'V', pattern: ['D', 'D', 'D', 'C'] }, { letter: 'N', pattern: ['C', 'D'] }, { letter: 'E', pattern: ['D'] },
-            { letter: 'R', pattern: ['D', 'C', 'D'] }, { letter: 'T', pattern: ['C'] }, { letter: 'E', pattern: ['D'] }, { letter: 'H', pattern: ['D', 'D', 'D', 'D'] }, { letter: 'E', pattern: ['D'] }, { letter: '', pattern: [] },
-            { letter: 'E', pattern: ['D'] }, { letter: 'S', pattern: ['D', 'D', 'D'] }, { letter: '', pattern: [] }, { letter: 'E', pattern: ['D'] }, { letter: 'N', pattern: ['C', 'D'] }, { letter: 'V', pattern: ['D', 'D', 'D', 'C'] }
+            // 第一層：R (.-.), [空], Y (-.--), T (-), F (..-.), O (---)
+            { letter: 'R', pattern: ['C', 'D', 'C'] },
+            { letter: '', pattern: [] },
+            { letter: 'Y', pattern: ['D', 'C', 'D', 'D'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'F', pattern: ['C', 'C', 'D', 'C'] },
+            { letter: 'O', pattern: ['D', 'D', 'D'] },
+
+            // 第二層：H (....), T (-), G (--.), E (.), Y (-.--), I (..)
+            { letter: 'H', pattern: ['C', 'C', 'C', 'C'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'G', pattern: ['D', 'D', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'Y', pattern: ['D', 'C', 'D', 'D'] },
+            { letter: 'I', pattern: ['C', 'C'] },
+
+            // 第三層：L (.-..), E (.), E (.), V (...-), N (-.), E (.)
+            { letter: 'L', pattern: ['C', 'D', 'C', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'V', pattern: ['C', 'C', 'C', 'D'] },
+            { letter: 'N', pattern: ['D', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+
+            // 第四層：R (.-.), T (-), E (.), H (....), E (.), [空]
+            { letter: 'R', pattern: ['C', 'D', 'C'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'H', pattern: ['C', 'C', 'C', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: '', pattern: [] },
+
+            // 第五層：E (.), S (...), [空], E (.), N (-.), V (...-)
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'S', pattern: ['C', 'C', 'C'] },
+            { letter: '', pattern: [] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'N', pattern: ['D', 'C'] },
+            { letter: 'V', pattern: ['C', 'C', 'C', 'D'] }
         ];
+
+        // 各層解答的對應預設值
+        const layerAnswers = [40, 80, 11, 3, 7];
 
         let cabinetData = [];
         let currentActiveIndex = null;
@@ -172,9 +210,29 @@
         function generateRandomCabinet() {
             cabinetData = cabinetStructure.map(item => {
                 const balls = item.pattern.map(type => type === 'D' ? getRandom(primes) : getRandom(composites));
-                return { letter: item.letter, balls: balls };
+                return { letter: item.letter, balls: balls, pattern: item.pattern };
             });
             userState = cabinetData.map(() => ({ letter: '', morse: [] }));
+        }
+
+        // 判斷單一櫃格答案是否正確（英文與摩斯符號均對）
+        function checkCellCorrect(index) {
+            const target = cabinetData[index];
+            const user = userState[index];
+
+            if (target.balls.length === 0) return true; // 空櫃格視為正確
+
+            // 1. 檢查字母
+            if (user.letter !== target.letter) return false;
+
+            // 2. 檢查摩斯符號 (dot代表合數'C'，dash代表質數'D')
+            if (user.morse.length !== target.pattern.length) return false;
+            for (let i = 0; i < target.pattern.length; i++) {
+                const expected = target.pattern[i] === 'D' ? 'dash' : 'dot';
+                if (user.morse[i] !== expected) return false;
+            }
+
+            return true;
         }
 
         function initCabinet() {
@@ -217,6 +275,59 @@
 
                 grid.appendChild(cell);
             });
+
+            checkLayersAndLock();
+        }
+
+        // 檢查各層英文與符號，決定該層數字輸入框解鎖狀態
+        function checkLayersAndLock() {
+            for (let layer = 0; layer < 5; layer++) {
+                let layerCorrect = true;
+                for (let col = 0; col < 6; col++) {
+                    const idx = layer * 6 + col;
+                    if (!checkCellCorrect(idx)) {
+                        layerCorrect = false;
+                        break;
+                    }
+                }
+
+                const inputEl = document.getElementById(`layer${layer + 1}`);
+                if (layerCorrect) {
+                    inputEl.disabled = false;
+                } else {
+                    inputEl.disabled = true;
+                    inputEl.value = ''; // 鎖定時清空輸入
+                }
+            }
+            checkUnlockState();
+        }
+
+        // 檢查層數字與開啟鑰匙編號解鎖狀態
+        function checkUnlockState() {
+            let allLayersReady = true;
+
+            for (let i = 1; i <= 5; i++) {
+                const inputEl = document.getElementById(`layer${i}`);
+                const val = parseInt(inputEl.value) || 0;
+
+                // 輸入框被鎖定，或者輸入答案不正確，則最下方區域無法點選
+                if (inputEl.disabled || val !== layerAnswers[i - 1]) {
+                    allLayersReady = false;
+                    break;
+                }
+            }
+
+            const keyInput = document.getElementById('keyInput');
+            const checkBtn = document.getElementById('checkBtn');
+
+            if (allLayersReady) {
+                keyInput.disabled = false;
+                checkBtn.disabled = false;
+            } else {
+                keyInput.disabled = true;
+                checkBtn.disabled = true;
+                keyInput.value = '';
+            }
         }
 
         function toggleModalMorseTable() {
@@ -283,7 +394,7 @@
 
         function closeModal() {
             document.getElementById('cell-modal').classList.add('hidden');
-            document.getElementById('modal-morse-table').classList.add('hidden');
+            document.getElementById('modal-morse-table').classList.remove('hidden');
             currentActiveIndex = null;
             tempMorse = [];
         }
