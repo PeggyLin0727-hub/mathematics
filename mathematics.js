@@ -3,7 +3,7 @@
  */
 
 /**
- * 載入主入口頁面 (根目錄 index.html)
+ * 載入主入口頁面 (根目錄 \mathematics\index.html) -> 移除 QR Code 按鈕
  */
 function loadMainPortal() {
     fetch('topics.json')
@@ -32,10 +32,7 @@ function loadMainPortal() {
                                 </div>
                             </a>
                             <div class="nav-actions">
-                                <button class="qr-btn" onclick="showQRCodeModal('${targetUrl}', '${topic.title}')" title="顯示 QR Code">
-                                    <i class="qr-icon"></i>
-                                    <span>QR</span>
-                                </button>
+                                <!-- 首頁不放置 QR Code 按鈕，僅保留進入按鈕 -->
                                 <a href="${targetUrl}" class="nav-arrow">進入 ➔</a>
                             </div>
                         </div>
