@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>國中數學互動學習遊戲總入口 - Mathematics Games Portal</title>
-    <link rel="stylesheet" href="mathematics.css">
+    <script src="asset-loader.js"></script>
 </head>
 <body>
 
@@ -17,7 +17,11 @@
         <div id="portal-content" style="width: 100%;"></div>
     </div>
 
-    <script src="mathematics.js"></script>
-    <script>loadMainPortal();</script>
+    <script>
+        // 確保 asset-loader 載入完畢後執行頁面初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMainPortal();
+        });
+    </script>
 </body>
 </html>
