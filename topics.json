@@ -1,0 +1,174 @@
+[
+  {
+    "category": "1. 代數與方程式 (Algebra and Equations)",
+    "topics": [
+      {
+        "title": "一元一次方程式",
+        "enTitle": "Linear Equations in One Variable",
+        "folder": "linearEquationsInOneVariable",
+        "desc": "代數式化簡、移項法則與方程式求解。"
+      },
+      {
+        "title": "二元一次聯立方程式",
+        "enTitle": "System of Linear Equations in Two Variables",
+        "folder": "systemOfLinearEquationsInTwoVariables",
+        "desc": "掌握加減消去法與代入消去法。"
+      },
+      {
+        "title": "一元一次不等式",
+        "enTitle": "Linear Inequalities in One Variable",
+        "folder": "linearInequalitiesInOneVariable",
+        "desc": "不等號方向變化與數線上的解集。"
+      },
+      {
+        "title": "一元二次方程式",
+        "enTitle": "Quadratic Equations",
+        "folder": "quadraticEquations",
+        "desc": "因式分解、配方法與求根公式應用。"
+      }
+    ]
+  },
+  {
+    "category": "2. 數系與基礎代數 (Number Systems & Algebra)",
+    "topics": [
+      {
+        "title": "整數的運算",
+        "enTitle": "Operations on Integers",
+        "folder": "operationsOnIntegers",
+        "desc": "正負數運算、絕對值與指數律。"
+      },
+      {
+        "title": "因數分解與分數運算",
+        "enTitle": "Factorization and Fractions",
+        "folder": "factorFactorizationAndFractions",
+        "desc": "質數與合數、質因數分解、最大公因數與最小公倍數。"
+      },
+      {
+        "title": "乘法公式與多項式",
+        "enTitle": "Multiplication Formulas and Polynomials",
+        "folder": "multiplicationFormulasAndPolynomials",
+        "desc": "展開公式與多項式四則運算。"
+      },
+      {
+        "title": "平方根與根式運算",
+        "enTitle": "Square Roots and Radicals",
+        "folder": "squareRootsAndRadicals",
+        "desc": "平方根概念與根式簡化。"
+      },
+      {
+        "title": "因式分解",
+        "enTitle": "Factoring Polynomials",
+        "folder": "factoringPolynomials",
+        "desc": "提公因式、公式法與十字交乘法。"
+      }
+    ]
+  },
+  {
+    "category": "3. 比例與函數 (Proportions and Functions)",
+    "topics": [
+      {
+        "title": "比例",
+        "enTitle": "Ratio and Proportion",
+        "folder": "ratioAndProportion",
+        "desc": "比與比例式、正比與反比應用。"
+      },
+      {
+        "title": "直角座標與二元一次圖形",
+        "enTitle": "Cartesian Coordinate System and Linear Graphs",
+        "folder": "cartesianCoordinateSystemAndLinearGraphs",
+        "desc": "平面座標系與直線方程式圖形。"
+      },
+      {
+        "title": "二次函數",
+        "enTitle": "Quadratic Functions",
+        "folder": "quadraticFunctions",
+        "desc": "拋物線圖形、對稱軸與最大最小值。"
+      }
+    ]
+  },
+  {
+    "category": "4. 數列與級數 (Sequences and Series)",
+    "topics": [
+      {
+        "title": "數列與等差級數",
+        "enTitle": "Arithmetic Sequences and Series",
+        "folder": "arithmeticSequencesAndSeries",
+        "desc": "等差數列公差與級數求和。"
+      }
+    ]
+  },
+  {
+    "category": "5. 平面幾何 (Plane Geometry)",
+    "topics": [
+      {
+        "title": "幾何圖形與尺規作圖",
+        "enTitle": "Geometric Figures and Constructions",
+        "folder": "geometricFiguresAndConstructions",
+        "desc": "角、多邊形性質與基本尺規作圖。"
+      },
+      {
+        "title": "畢氏定理",
+        "enTitle": "Pythagorean Theorem",
+        "folder": "pythagoreanTheorem",
+        "desc": "直角三角形三邊長關係與應用。"
+      },
+      {
+        "title": "三角形的性質",
+        "enTitle": "Properties of Triangles",
+        "folder": "propertiesOfTriangles",
+        "desc": "全等三角形、角平分線、中垂線與邊角關係。"
+      },
+      {
+        "title": "平行與四邊形",
+        "enTitle": "Parallel Lines and Quadrilaterals",
+        "folder": "parallelLinesAndQuadrilaterals",
+        "desc": "平行線截角、平行四邊形與特殊四邊形。"
+      }
+    ]
+  },
+  {
+    "category": "6. 進階幾何與證明 (Advanced Geometry & Proofs)",
+    "topics": [
+      {
+        "title": "相似形",
+        "enTitle": "Similar Figures",
+        "folder": "similarFigures",
+        "desc": "比例線段與相似三角形判定。"
+      },
+      {
+        "title": "圓形",
+        "enTitle": "Circles",
+        "folder": "circles",
+        "desc": "弦與弧、圓心角、圓周角與切線。"
+      },
+      {
+        "title": "三心與推理證明",
+        "enTitle": "Triangle Centers and Proofs",
+        "folder": "triangleCentersAndProofs",
+        "desc": "外心、內心、重心與幾何推理。"
+      }
+    ]
+  },
+  {
+    "category": "7. 空間幾何 (Spatial Geometry)",
+    "topics": [
+      {
+        "title": "空間立體圖形",
+        "enTitle": "Solid Geometry",
+        "folder": "solidGeometry",
+        "desc": "柱體、錐體與球體之表面積與體積。"
+      }
+    ]
+  },
+  {
+    "category": "8. 統計與機率 (Statistics and Probability)",
+    "topics": [
+      {
+        "title": "統計與機率",
+        "enTitle": "Statistics and Probability",
+        "folder": "statisticsAndProbability",
+        "desc": "統計圖表、百分位數、盒狀圖與機率樹狀圖。"
+      }
+    ]
+  }
+]

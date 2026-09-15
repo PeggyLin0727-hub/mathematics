@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數學遊戲首頁 - Mathematics Games</title>
+    <title>國中數學互動學習遊戲總入口 - Mathematics Games Portal</title>
     <link rel="stylesheet" href="mathematics.css">
     <style>
         .portal-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
             align-items: center;
+        }
+
+        .category-group {
+            width: 100%;
+        }
+
+        .category-title {
+            color: #4A90E2;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #2C3E50;
+            padding-bottom: 5px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 15px;
         }
 
         .nav-card {
             background: #ffffff;
-            border-radius: 16px;
-            padding: 25px;
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -32,40 +49,43 @@
 
         .nav-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
         }
 
         .nav-info {
             text-align: left;
         }
 
-        .nav-info h2 {
-            font-size: 1.4rem;
+        .nav-info h3 {
+            font-size: 1.2rem;
             color: #2C3E50;
+            margin-bottom: 4px;
+        }
+
+        .nav-info .en-sub {
+            font-size: 0.8rem;
+            color: #888;
             margin-bottom: 8px;
+            display: block;
         }
 
         .nav-info p {
             color: #666;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
         }
 
         .nav-arrow {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #4A90E2;
             font-weight: bold;
             margin-left: 15px;
+            white-space: nowrap;
         }
 
         @media (max-width: 600px) {
-            .nav-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .nav-arrow {
-                align-self: flex-end;
+            .grid-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -74,28 +94,54 @@
 
     <div class="portal-container">
         <div style="text-align: center; color: #ffffff; margin-bottom: 10px;">
-            <h1 style="color: #ffffff; font-size: 2.2rem; margin-bottom: 8px;">📐 數學遊戲入口網</h1>
-            <p style="color: #A0AEC0; font-size: 1rem;">點擊下方卡片選擇欲挑戰的遊戲：</p>
+            <h1 style="color: #ffffff; font-size: 2.2rem; margin-bottom: 8px;">📐 國中數學互動學習館</h1>
+            <p style="color: #A0AEC0; font-size: 1rem;">選擇主題單元開始挑戰：</p>
         </div>
 
-        <!-- 卡片 1: 質數大挑戰 -->
-        <a href="primeNumbers.html" class="nav-card">
-            <div class="nav-info">
-                <h2>⚡ 質數大挑戰 (Prime Challenge)</h2>
-                <p>測試你的數字反應速度！判斷 1 ~ 100 內的數字是質數還是合數，提供基本與限時競速雙模式。</p>
-            </div>
-            <div class="nav-arrow">開始挑戰 ➔</div>
-        </a>
-
-        <!-- 卡片 2: 摩斯密碼解鎖櫃 -->
-        <a href="primeNumbersByMordeCode.html" class="nav-card">
-            <div class="nav-info">
-                <h2>🔐 摩斯密碼解鎖櫃 (Morse Code Cabinet)</h2>
-                <p>結合質數判斷與摩斯密碼對照！觀察 5x6 玻璃櫃中的黃球數字，破解五層線索與鑰匙編號。</p>
-            </div>
-            <div class="nav-arrow">開啟解密 ➔</div>
-        </a>
+        <!-- 動態渲染各單元入口列表 -->
+        <div id="portal-content" style="width: 100%;"></div>
     </div>
 
+    <script>
+        // 自動載入 topics.json 動態渲染單元列表
+        fetch('topics.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('portal-content');
+                let htmlContent = '';
+
+                data.forEach(group => {
+                    htmlContent += `
+                        <div class="category-group">
+                            <h2 class="category-title">${group.category}</h2>
+                            <div class="grid-container">
+                    `;
+
+                    group.topics.forEach(topic => {
+                        htmlContent += `
+                            <a href="./${topic.folder}/index.html" class="nav-card">
+                                <div class="nav-info">
+                                    <h3>${topic.title}</h3>
+                                    <span class="en-sub">${topic.enTitle}</span>
+                                    <p>${topic.desc}</p>
+                                </div>
+                                <div class="nav-arrow">進入 ➔</div>
+                            </a>
+                        `;
+                    });
+
+                    htmlContent += `
+                            </div>
+                        </div>
+                        <br>
+                    `;
+                });
+
+                container.innerHTML = htmlContent;
+            })
+            .catch(error => {
+                console.error('無載入 JSON 設定檔：', error);
+            });
+    </script>
 </body>
 </html>
