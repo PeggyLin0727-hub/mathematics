@@ -32,31 +32,7 @@
         </a>
     </div>
 
-    <script>
-        // 自動讀取上一層 ../topics.json 檔並配對當前資料夾名稱的中文題目
-        const currentFolder = 'factorFactorizationAndFractions';
-        
-        fetch('../topics.json')
-            .then(response => response.json())
-            .then(data => {
-                let matchedTitle = '';
-                // 尋找對應 folder 的中文名稱
-                for (const group of data) {
-                    const found = group.topics.find(t => t.folder === currentFolder);
-                    if (found) {
-                        matchedTitle = found.title;
-                        break;
-                    }
-                }
-                
-                if (matchedTitle) {
-                    document.getElementById('page-title').innerText = `📐 ${matchedTitle}`;
-                    document.title = `${matchedTitle} - 數學遊戲`;
-                }
-            })
-            .catch(error => {
-                console.error('無載入 JSON 設定檔：', error);
-            });
-    </script>
+    <script src="../mathematics.js"></script>
+    <script>loadSubPortal('factorFactorizationAndFractions');</script>
 </body>
 </html>
