@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>數學遊戲首頁 - Mathematics Games</title>
     <link rel="stylesheet" href="../mathematics.css">
+    <!-- 引入 QRCode.js CDN 庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="../mathematics.js"></script>
 </head>
 <body>
@@ -15,22 +17,32 @@
         </div>
 
         <!-- 卡片 1: 質數大挑戰 -->
-        <a href="primeNumbers.html" class="nav-card">
-            <div class="nav-info">
-                <h2>⚡ 質數大挑戰 (Prime Challenge)</h2>
-                <p>測試你的數字反應速度！判斷 1 ~ 100 內的數字是質數還是合數，提供基本與限時競速雙模式。</p>
+        <div class="nav-card">
+            <a href="primeNumbers.html" class="nav-info-link">
+                <div class="nav-info">
+                    <h2>⚡ 質數大挑戰 (Prime Challenge)</h2>
+                    <p>測試你的數字反應速度！判斷 1 ~ 100 內的數字是質數還是合數，提供基本與限時競速雙模式。</p>
+                </div>
+            </a>
+            <div class="nav-actions">
+                <button class="qr-btn" onclick="showQRCodeModal('primeNumbers.html', '⚡ 質數大挑戰')" title="顯示 QR Code">📱</button>
+                <a href="primeNumbers.html" class="nav-arrow">開始挑戰 ➔</a>
             </div>
-            <div class="nav-arrow">開始挑戰 ➔</div>
-        </a>
+        </div>
 
         <!-- 卡片 2: 摩斯密碼解鎖櫃 -->
-        <a href="primeNumbersByMordeCode.html" class="nav-card">
-            <div class="nav-info">
-                <h2>🔐 摩斯密碼解鎖櫃 (Morse Code Cabinet)</h2>
-                <p>結合質數判斷與摩斯密碼對照！觀察 5x6 玻璃櫃中的黃球數字，破解五層線索與鑰匙編號。</p>
+        <div class="nav-card">
+            <a href="primeNumbersByMordeCode.html" class="nav-info-link">
+                <div class="nav-info">
+                    <h2>🔐 摩斯密碼解鎖櫃 (Morse Code Cabinet)</h2>
+                    <p>結合質數判斷與摩斯密碼對照！觀察 5x6 玻璃櫃中的黃球數字，破解五層線索與鑰匙編號。</p>
+                </div>
+            </a>
+            <div class="nav-actions">
+                <button class="qr-btn" onclick="showQRCodeModal('primeNumbersByMordeCode.html', '🔐 摩斯密碼解鎖櫃')" title="顯示 QR Code">📱</button>
+                <a href="primeNumbersByMordeCode.html" class="nav-arrow">開啟解密 ➔</a>
             </div>
-            <div class="nav-arrow">開啟解密 ➔</div>
-        </a>
+        </div>
     </div>
 
     <script>loadSubPortal('factorFactorizationAndFractions');</script>
