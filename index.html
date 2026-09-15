@@ -18,8 +18,8 @@
     </div>
 
     <script>
-        // 確保 asset-loader 載入完畢後執行頁面初始化
-        window.addEventListener('DOMContentLoaded', () => {
+        // 改為監聽 JS 資源真正下載完畢的事件
+        window.addEventListener('mathematicsLoaded', () => {
             loadMainPortal();
         });
     </script>
