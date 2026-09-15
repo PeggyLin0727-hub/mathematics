@@ -180,10 +180,15 @@ input:disabled, button:disabled {
 .qr-btn {
     background: #edf2f7;
     border: 1px solid #cbd5e0;
-    font-size: 1.2rem;
-    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #2C3E50;
+    padding: 6px 10px;
     border-radius: 8px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     transition: all 0.2s ease;
 }
 
@@ -191,6 +196,19 @@ input:disabled, button:disabled {
     background: #4A90E2;
     color: white;
     border-color: #357ABD;
+}
+
+/* 使用 CSS Mask 引入 SVG QR Icon */
+.qr-icon {
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v3h-2v-3zm3 3h3v5h-3v-5zm-3 2h2v3h-2v-3zm-2-2h2v2h-2v-2z"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v3h-2v-3zm3 3h3v5h-3v-5zm-3 2h2v3h-2v-3zm-2-2h2v2h-2v-2z"/></svg>');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
 }
 
 @media (max-width: 600px) {
@@ -373,7 +391,6 @@ input:disabled, button:disabled {
 /* ==========================================
    摩斯密碼櫃 (primeNumbersByMordeCode.html) 專用樣式
    ========================================== */
-/* 5x6 玻璃櫃 */
 .cabinet-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -586,9 +603,9 @@ input:disabled, button:disabled {
     flex-wrap: wrap;
 }
 
-/* QR Code 專用 Modal */
+/* QR Code 專用 Modal (不含文字網址) */
 .qr-modal-content {
-    max-width: 360px;
+    max-width: 320px;
     padding: 25px;
     position: relative;
 }
