@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>質數大挑戰 Prime Challenge</title>
+    <link rel="stylesheet" href="../mathematics.css">
+    <style>
+    /* 讓內容最少維持 810px，小於 810px 時頁面整體出現橫向滾輪 */
+    @media (max-width: 350px) {
+        body {
+            width: 350px;        /* 強制維持 810px 寬度，不隨螢幕變小而變窄 */
+            overflow-x: auto;    /* 超出螢幕範圍時顯示橫向滾輪 */
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- 灰底遮罩＋純顏色 SVG 圈圈與叉叉 -->
+        <div class="feedback-overlay" id="feedback-overlay">
+            <!-- 純綠色 ⭕ (同按鈕色碼 #2ECC71) -->
+            <svg id="icon-o" class="feedback-icon" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="38" stroke="#2ECC71" stroke-width="14" fill="none" />
+            </svg>
+            <!-- 純紅色 ❌ (同按鈕色碼 #E74C3C) -->
+            <svg id="icon-x" class="feedback-icon" viewBox="0 0 100 100">
+                <path d="M 25 25 L 75 75 M 75 25 L 25 75" stroke="#E74C3C" stroke-width="14" stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <!-- 主選單 -->
+        <div id="start-screen">
+            <h1>質數大挑戰</h1>
+            <p class="subtitle">數字範圍：1 ~ 100</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="startGame('basic')">
+                    基本模式<br><span style="font-size: 0.85rem; font-weight: normal;">(不計時 / 共 10 題)</span>
+                </button>
+                <button class="btn btn-speed" onclick="startGame('speed')">
+                    競速模式⚡<br><span style="font-size: 0.85rem; font-weight: normal;">(限時 30 秒 / 共 10 題)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 遊戲畫面 -->
+        <div id="game-screen" class="hidden">
+            <div class="game-header">
+                <div>題目：<span id="question-count">1</span> / 10</div>
+                <div id="timer-box" class="timer-box hidden">⏱️ <span id="time-left">30</span>s</div>
+            </div>
+
+            <div class="number-box">
+                <div class="number-display" id="current-number">?</div>
+            </div>
+
+            <div class="action-btns">
+                <button id="btn-yes" class="btn btn-yes" onclick="answer(true)">質數</button>
+                <button id="btn-no" class="btn btn-no" onclick="answer(false)">合數</button>
+            </div>
+        </div>
+
+        <!-- 結算畫面 -->
+        <div id="result-screen" class="hidden">
+            <h1>測驗完成！</h1>
+            <div class="score-display" id="final-score">0 分</div>
+            <p class="feedback-text" id="result-feedback"></p>
+            <button class="btn btn-primary" style="width: 100%;" onclick="showStartScreen()">返回主選單</button>
+        </div>
+    </div>
+
+    <script>
+        let mode = 'basic';
+        let currentQuestion = 0;
+        let score = 0;
+        let currentNum = 0;
+        let timer = null;
+        let timeLeft = 30;
+        let isAnswering = false;
+
+        // 題目池
+        let questionsList = [];
+
+        // 判斷質數
+        function isPrime(num) {
+            if (num <= 1) return false;
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+
+        // 陣列隨機洗牌 (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 建立符合條件（不重複、質數佔 3~7 成）的 10 題數字
+        function generateQuestions() {
+            // 1~100 中的所有質數與合數/1
+            const allPrimes = [];
+            const allComposites = [];
+
+            for (let i = 1; i <= 100; i++) {
+                if (isPrime(i)) {
+                    allPrimes.push(i);
+                } else {
+                    allComposites.push(i);
+                }
+            }
+
+            // 隨機決定質數數量 ( 3 ~ 7 個 )
+            const primeCount = Math.floor(Math.random() * 5) + 3; // 產生 3, 4, 5, 6, 7
+            const compositeCount = 10 - primeCount;
+
+            // 洗牌後取出指定數量
+            const selectedPrimes = shuffle([...allPrimes]).slice(0, primeCount);
+            const selectedComposites = shuffle([...allComposites]).slice(0, compositeCount);
+
+            // 合併並再次洗牌打亂順序
+            questionsList = shuffle([...selectedPrimes, ...selectedComposites]);
+        }
+
+        function startGame(selectedMode) {
+            mode = selectedMode;
+            currentQuestion = 0;
+            score = 0;
+            isAnswering = false;
+            
+            // 產生新題目
+            generateQuestions();
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            const timerBox = document.getElementById('timer-box');
+            if (mode === 'speed') {
+                timeLeft = 30;
+                document.getElementById('time-left').innerText = timeLeft;
+                timerBox.classList.remove('hidden');
+                startTimer();
+            } else {
+                timerBox.classList.add('hidden');
+            }
+
+            nextQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-left').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= 10) {
+                endGame();
+                return;
+            }
+
+            // 從預先產生的題目池中按序取出數字
+            currentNum = questionsList[currentQuestion];
+            currentQuestion++;
+
+            document.getElementById('question-count').innerText = currentQuestion;
+            document.getElementById('current-number').innerText = currentNum;
+
+            toggleButtons(false);
+            isAnswering = false;
+        }
+
+        function answer(userAnswer) {
+            if (isAnswering) return;
+            isAnswering = true;
+            toggleButtons(true);
+
+            const correct = isPrime(currentNum);
+            const isCorrect = (userAnswer === correct);
+            
+            if (isCorrect) score += 10;
+
+            showFeedback(isCorrect);
+
+            setTimeout(() => {
+                hideFeedback();
+                nextQuestion();
+            }, 500);
+        }
+
+        function toggleButtons(disabled) {
+            document.getElementById('btn-yes').disabled = disabled;
+            document.getElementById('btn-no').disabled = disabled;
+        }
+
+        function showFeedback(isCorrect) {
+            const overlay = document.getElementById('feedback-overlay');
+            const iconO = document.getElementById('icon-o');
+            const iconX = document.getElementById('icon-x');
+
+            if (isCorrect) {
+                iconO.classList.add('show');
+                iconX.classList.remove('show');
+            } else {
+                iconX.classList.add('show');
+                iconO.classList.remove('show');
+            }
+
+            overlay.classList.add('show');
+        }
+
+        function hideFeedback() {
+            const overlay = document.getElementById('feedback-overlay');
+            const iconO = document.getElementById('icon-o');
+            const iconX = document.getElementById('icon-x');
+
+            overlay.classList.remove('show');
+            iconO.classList.remove('show');
+            iconX.classList.remove('show');
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            document.getElementById('final-score').innerText = score + ' 分';
+            
+            let feedback = '';
+            if (score === 100) feedback = '🎉 太厲害了！完全答對！';
+            else if (score >= 70) feedback = '👏 做得好！質數觀念很棒！';
+            else if (score >= 50) feedback = '👍 還不錯，繼續加油！';
+            else feedback = '💪 再接再厲，多練習幾次會更好！';
+
+            document.getElementById('result-feedback').innerText = feedback;
+        }
+
+        function showStartScreen() {
+            clearInterval(timer);
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

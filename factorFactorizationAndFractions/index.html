@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數學遊戲首頁 - Mathematics Games</title>
+    <link rel="stylesheet" href="../mathematics.css">
+</head>
+<body>
+
+    <div class="portal-container">
+        <div style="text-align: center; color: #ffffff; margin-bottom: 10px;">
+            <h1 id="page-title" style="color: #ffffff; font-size: 2.2rem; margin-bottom: 8px;">📐 數學遊戲入口網</h1>
+        </div>
+
+        <!-- 卡片 1: 質數大挑戰 -->
+        <a href="primeNumbers.html" class="nav-card">
+            <div class="nav-info">
+                <h2>⚡ 質數大挑戰 (Prime Challenge)</h2>
+                <p>測試你的數字反應速度！判斷 1 ~ 100 內的數字是質數還是合數，提供基本與限時競速雙模式。</p>
+            </div>
+            <div class="nav-arrow">開始挑戰 ➔</div>
+        </a>
+
+        <!-- 卡片 2: 摩斯密碼解鎖櫃 -->
+        <a href="primeNumbersByMordeCode.html" class="nav-card">
+            <div class="nav-info">
+                <h2>🔐 摩斯密碼解鎖櫃 (Morse Code Cabinet)</h2>
+                <p>結合質數判斷與摩斯密碼對照！觀察 5x6 玻璃櫃中的黃球數字，破解五層線索與鑰匙編號。</p>
+            </div>
+            <div class="nav-arrow">開啟解密 ➔</div>
+        </a>
+    </div>
+
+    <script>
+        // 自動讀取上一層 ../topics.json 檔並配對當前資料夾名稱的中文題目
+        const currentFolder = 'factorFactorizationAndFractions';
+        
+        fetch('../topics.json')
+            .then(response => response.json())
+            .then(data => {
+                let matchedTitle = '';
+                // 尋找對應 folder 的中文名稱
+                for (const group of data) {
+                    const found = group.topics.find(t => t.folder === currentFolder);
+                    if (found) {
+                        matchedTitle = found.title;
+                        break;
+                    }
+                }
+                
+                if (matchedTitle) {
+                    document.getElementById('page-title').innerText = `📐 ${matchedTitle}`;
+                    document.title = `${matchedTitle} - 數學遊戲`;
+                }
+            })
+            .catch(error => {
+                console.error('無載入 JSON 設定檔：', error);
+            });
+    </script>
+</body>
+</html>
