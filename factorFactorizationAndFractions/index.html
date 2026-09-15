@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>數學遊戲首頁 - Mathematics Games</title>
     <link rel="stylesheet" href="../mathematics.css">
-    <!-- 引入 QRCode.js CDN 庫 -->
+    <!-- 引入 QRCode.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="../mathematics.js"></script>
 </head>
@@ -25,7 +25,10 @@
                 </div>
             </a>
             <div class="nav-actions">
-                <button class="qr-btn" onclick="showQRCodeModal('primeNumbers.html', '⚡ 質數大挑戰')" title="顯示 QR Code">📱</button>
+                <button class="qr-btn" onclick="showQRCodeModal('primeNumbers.html', '⚡ 質數大挑戰')" title="顯示 QR Code">
+                    <i class="qr-icon"></i>
+                    <span>QR</span>
+                </button>
                 <a href="primeNumbers.html" class="nav-arrow">開始挑戰 ➔</a>
             </div>
         </div>
@@ -39,7 +42,10 @@
                 </div>
             </a>
             <div class="nav-actions">
-                <button class="qr-btn" onclick="showQRCodeModal('primeNumbersByMordeCode.html', '🔐 摩斯密碼解鎖櫃')" title="顯示 QR Code">📱</button>
+                <button class="qr-btn" onclick="showQRCodeModal('primeNumbersByMordeCode.html', '🔐 摩斯密碼解鎖櫃')" title="顯示 QR Code">
+                    <i class="qr-icon"></i>
+                    <span>QR</span>
+                </button>
                 <a href="primeNumbersByMordeCode.html" class="nav-arrow">開啟解密 ➔</a>
             </div>
         </div>
