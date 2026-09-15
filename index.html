@@ -17,46 +17,7 @@
         <div id="portal-content" style="width: 100%;"></div>
     </div>
 
-    <script>
-        // 自動載入 topics.json 動態渲染單元列表
-        fetch('topics.json')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('portal-content');
-                let htmlContent = '';
-
-                data.forEach(group => {
-                    htmlContent += `
-                        <div class="category-group">
-                            <h2 class="category-title">${group.category}</h2>
-                            <div class="grid-container">
-                    `;
-
-                    group.topics.forEach(topic => {
-                        htmlContent += `
-                            <a href="./${topic.folder}/index.html" class="nav-card">
-                                <div class="nav-info">
-                                    <h3>${topic.title}</h3>
-                                    <span class="en-sub hidden">${topic.enTitle}</span>
-                                    <p>${topic.desc}</p>
-                                </div>
-                                <div class="nav-arrow">進入 ➔</div>
-                            </a>
-                        `;
-                    });
-
-                    htmlContent += `
-                            </div>
-                        </div>
-                        <br>
-                    `;
-                });
-
-                container.innerHTML = htmlContent;
-            })
-            .catch(error => {
-                console.error('無載入 JSON 設定檔：', error);
-            });
-    </script>
+    <script src="mathematics.js"></script>
+    <script>loadMainPortal();</script>
 </body>
 </html>
