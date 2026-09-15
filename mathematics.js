@@ -69,9 +69,9 @@ function loadSubPortal(currentFolder) {
             if (matchedTitle) {
                 const titleEl = document.getElementById('page-title');
                 if (titleEl) {
-                    titleEl.innerText = `📐 ${matchedTitle}`;
+                    titleEl.innerText = `${matchedTitle}`;
                 }
-                document.title = `${matchedTitle} - 數學遊戲`;
+                document.title = `${matchedTitle}`;
             }
         })
         .catch(error => {
