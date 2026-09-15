@@ -82,6 +82,102 @@ input:disabled, button:disabled {
 }
 
 /* ==========================================
+   入口網頁通用元件 (Portal & Nav Cards)
+   ========================================== */
+.portal-container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    z-index: 1;
+}
+
+.category-group {
+    width: 100%;
+}
+
+.category-title {
+    color: #4A90E2;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #2C3E50;
+    padding-bottom: 5px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 15px;
+}
+
+.nav-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px 25px;
+    width: 100%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.nav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.nav-info {
+    text-align: left;
+}
+
+.nav-info h2, .nav-info h3 {
+    font-size: 1.3rem;
+    color: #2C3E50;
+    margin-bottom: 6px;
+}
+
+.nav-info .en-sub {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.nav-info p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.nav-arrow {
+    font-size: 1.4rem;
+    color: #4A90E2;
+    font-weight: bold;
+    margin-left: 15px;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+    .nav-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .nav-arrow {
+        align-self: flex-end;
+    }
+}
+
+/* ==========================================
    按鈕元件 (Buttons)
    ========================================== */
 .btn-group {
