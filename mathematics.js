@@ -32,7 +32,10 @@ function loadMainPortal() {
                                 </div>
                             </a>
                             <div class="nav-actions">
-                                <button class="qr-btn" onclick="showQRCodeModal('${targetUrl}', '${topic.title}')" title="顯示 QR Code">📱</button>
+                                <button class="qr-btn" onclick="showQRCodeModal('${targetUrl}', '${topic.title}')" title="顯示 QR Code">
+                                    <i class="qr-icon"></i>
+                                    <span>QR</span>
+                                </button>
                                 <a href="${targetUrl}" class="nav-arrow">進入 ➔</a>
                             </div>
                         </div>
@@ -63,6 +66,7 @@ function loadSubPortal(currentFolder) {
         .then(data => {
             let matchedTitle = '';
             
+            // 尋找對應 folder 的中文名稱
             for (const group of data) {
                 const found = group.topics.find(t => t.folder === currentFolder);
                 if (found) {
@@ -99,9 +103,9 @@ function isPrime(num) {
 
 /**
  * 在指定 DOM 元素生成 QR Code
- * @param {HTMLElement|string} element - 目標 DOM 或 ID
- * @param {string} url - 網址（可為相對路徑，自動轉為絕對路徑）
- * @param {object} options - QRCode 設定項目 (寬, 高, 顏色等)
+ * @param {HTMLElement|string} element - 目標 DOM 元素或其 ID
+ * @param {string} url - 網址（相對路徑將自動轉換為絕對路徑）
+ * @param {object} options - QRCode 自訂參數 (寬、高、顏色等)
  */
 function generateQRCode(element, url, options = {}) {
     const targetEl = typeof element === 'string' ? document.getElementById(element) : element;
@@ -110,30 +114,34 @@ function generateQRCode(element, url, options = {}) {
     // 清空舊內容
     targetEl.innerHTML = '';
 
-    // 取得完整絕對網址
+    // 將相對路徑轉換為完整網址
     const absoluteUrl = new URL(url, window.location.href).href;
 
     const defaultOptions = {
         text: absoluteUrl,
-        width: 180,
-        height: 180,
+        width: 200,
+        height: 200,
         colorDark: "#2C3E50",
         colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+        correctLevel: typeof QRCode !== 'undefined' ? QRCode.CorrectLevel.H : 2
     };
 
-    new QRCode(targetEl, { ...defaultOptions, ...options });
+    if (typeof QRCode !== 'undefined') {
+        new QRCode(targetEl, { ...defaultOptions, ...options });
+    } else {
+        console.error('未找到 QRCode.js 函式庫，請確認頁面是否有引入 QRCode CDN。');
+    }
 }
 
 /**
- * 彈出 QR Code Modal 供使用者掃瞄
+ * 彈出 QR Code Modal 供使用者掃瞄 (純圖示，不列出網址文字)
  * @param {string} url - 連結目標網址
  * @param {string} title - Modal 標題名稱
  */
 function showQRCodeModal(url, title = '掃描 QR Code 開始遊戲') {
     let modalOverlay = document.getElementById('global-qr-modal');
 
-    // 若 Modal 元素還不存在則動態創建
+    // 若 Modal HTML 元素不存在，則自動在 body 內動態建立
     if (!modalOverlay) {
         modalOverlay = document.createElement('div');
         modalOverlay.id = 'global-qr-modal';
@@ -143,26 +151,23 @@ function showQRCodeModal(url, title = '掃描 QR Code 開始遊戲') {
                 <button class="modal-close-btn" onclick="closeQRCodeModal()">✕</button>
                 <h3 id="qr-modal-title" style="margin-bottom: 15px; color: #2C3E50;"></h3>
                 <div id="qr-modal-code" style="display: flex; justify-content: center; margin: 15px 0;"></div>
-                <p id="qr-modal-url" style="font-size: 0.85rem; color: #666; word-break: break-all; margin-top: 10px;"></p>
             </div>
         `;
         document.body.appendChild(modalOverlay);
 
-        // 點擊背景關閉 Modal
+        // 點擊 Modal 外部陰影區域可關閉視窗
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeQRCodeModal();
         });
     }
 
     const titleEl = document.getElementById('qr-modal-title');
-    const urlEl = document.getElementById('qr-modal-url');
     const qrContainer = document.getElementById('qr-modal-code');
 
     const absoluteUrl = new URL(url, window.location.href).href;
     if (titleEl) titleEl.innerText = title;
-    if (urlEl) urlEl.innerText = absoluteUrl;
 
-    // 生成 QR Code
+    // 繪製 QR Code
     generateQRCode(qrContainer, absoluteUrl, { width: 200, height: 200 });
 
     modalOverlay.classList.remove('hidden');
