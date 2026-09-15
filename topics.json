@@ -1,6 +1,6 @@
 [
   {
-    "category": "1. 代數與方程式 (Algebra and Equations)",
+    "category": "1. 代數與方程式",
     "topics": [
       {
         "title": "一元一次方程式",
@@ -29,7 +29,7 @@
     ]
   },
   {
-    "category": "2. 數系與基礎代數 (Number Systems & Algebra)",
+    "category": "2. 數系與基礎代數",
     "topics": [
       {
         "title": "整數的運算",
@@ -64,7 +64,7 @@
     ]
   },
   {
-    "category": "3. 比例與函數 (Proportions and Functions)",
+    "category": "3. 比例與函數",
     "topics": [
       {
         "title": "比例",
@@ -87,7 +87,7 @@
     ]
   },
   {
-    "category": "4. 數列與級數 (Sequences and Series)",
+    "category": "4. 數列與級數",
     "topics": [
       {
         "title": "數列與等差級數",
@@ -98,7 +98,7 @@
     ]
   },
   {
-    "category": "5. 平面幾何 (Plane Geometry)",
+    "category": "5. 平面幾何",
     "topics": [
       {
         "title": "幾何圖形與尺規作圖",
@@ -127,7 +127,7 @@
     ]
   },
   {
-    "category": "6. 進階幾何與證明 (Advanced Geometry & Proofs)",
+    "category": "6. 進階幾何與證明",
     "topics": [
       {
         "title": "相似形",
@@ -150,7 +150,7 @@
     ]
   },
   {
-    "category": "7. 空間幾何 (Spatial Geometry)",
+    "category": "7. 空間幾何",
     "topics": [
       {
         "title": "空間立體圖形",
@@ -161,7 +161,7 @@
     ]
   },
   {
-    "category": "8. 統計與機率 (Statistics and Probability)",
+    "category": "8. 統計與機率",
     "topics": [
       {
         "title": "統計與機率",
