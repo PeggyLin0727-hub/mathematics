@@ -3,7 +3,7 @@
  */
 
 /**
- * 載入主入口頁面 (根目錄 \mathematics\index.html) -> 移除 QR Code 按鈕
+ * 載入主入口頁面 (根目錄 \mathematics\index.html) -> 點擊單元轉址至 sub_portal.html?folder=...
  */
 function loadMainPortal() {
     fetch('topics.json')
@@ -21,7 +21,8 @@ function loadMainPortal() {
                 `;
 
                 group.topics.forEach(topic => {
-                    const targetUrl = `./${topic.folder}/index.html`;
+                    // 指向根目錄下的共用 sub_portal.html，並帶上 folder 參數
+                    const targetUrl = `./sub_portal.html?folder=${topic.folder}`;
                     htmlContent += `
                         <div class="nav-card">
                             <a href="${targetUrl}" class="nav-info-link">
@@ -49,12 +50,84 @@ function loadMainPortal() {
             container.innerHTML = htmlContent;
         })
         .catch(error => {
-            console.error('無載入 JSON 設定檔：', error);
+            console.error('無法載入 topics.json 設定檔：', error);
         });
 }
 
 /**
- * 載入子單元入口頁面 (例如 /factorFactorizationAndFractions/index.html)
+ * 自動讀取 URL 中的 folder 參數，並動態載入對應單元的標題與 games.json (用於根目錄 sub_portal.html)
+ */
+function autoLoadSubPortal() {
+    // 1. 從 URL 查詢參數中取得 folder (例如: sub_portal.html?folder=factorFactorizationAndFractions)
+    const urlParams = new URLSearchParams(window.location.search);
+    const folder = urlParams.get('folder');
+
+    if (!folder) {
+        console.error('未指定單元 folder 參數');
+        return;
+    }
+
+    // 2. 讀取 topics.json 設定對應單元的中文標題
+    fetch('topics.json')
+        .then(response => response.json())
+        .then(data => {
+            let matchedTitle = '';
+            for (const group of data) {
+                const found = group.topics.find(t => t.folder === folder);
+                if (found) {
+                    matchedTitle = found.title;
+                    break;
+                }
+            }
+            if (matchedTitle) {
+                const titleEl = document.getElementById('page-title');
+                if (titleEl) titleEl.innerText = matchedTitle;
+                document.title = `${matchedTitle} - 數學遊戲入口`;
+            }
+        })
+        .catch(err => console.error('讀取 topics.json 失敗:', err));
+
+    // 3. 讀取指定單元資料夾下的 games.json 渲染卡片
+    fetch(`./${folder}/games.json`)
+        .then(response => {
+            if (!response.ok) throw new Error('找不到 games.json');
+            return response.json();
+        })
+        .then(games => {
+            const container = document.getElementById('games-container');
+            if (!container) return;
+
+            let htmlContent = '';
+            games.forEach(game => {
+                // 拼接遊戲目標網址 (相對路徑)
+                const gameUrl = `./${folder}/${game.url}`;
+
+                htmlContent += `
+                    <div class="nav-card">
+                        <a href="${gameUrl}" class="nav-info-link">
+                            <div class="nav-info">
+                                <h2>${game.title}</h2>
+                                <p>${game.desc}</p>
+                            </div>
+                        </a>
+                        <div class="nav-actions">
+                            <button class="qr-btn" onclick="showQRCodeModal('${gameUrl}', '${game.title}')" title="顯示 QR Code">
+                                <i class="qr-icon"></i>
+                                <span>QR</span>
+                            </button>
+                            <a href="${gameUrl}" class="nav-arrow">${game.actionText || '進入 ➔'}</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        })
+        .catch(err => console.error('載入 games.json 失敗:', err));
+}
+
+/**
+ * 載入子單元名稱工具函式 (相容舊版直接呼叫)
  * @param {string} currentFolder - 當前資料夾名稱
  */
 function loadSubPortal(currentFolder) {
@@ -62,8 +135,6 @@ function loadSubPortal(currentFolder) {
         .then(response => response.json())
         .then(data => {
             let matchedTitle = '';
-            
-            // 尋找對應 folder 的中文名稱
             for (const group of data) {
                 const found = group.topics.find(t => t.folder === currentFolder);
                 if (found) {
@@ -81,7 +152,7 @@ function loadSubPortal(currentFolder) {
             }
         })
         .catch(error => {
-            console.error('無載入 JSON 設定檔：', error);
+            console.error('無法載入 topics.json 設定檔：', error);
         });
 }
 
