@@ -222,7 +222,8 @@ input:disabled, button:disabled {
     }
     .nav-actions {
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-end;
+        gap: 12px;
         margin-left: 0;
     }
 }
