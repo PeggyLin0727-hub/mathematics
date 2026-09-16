@@ -82,8 +82,7 @@ function showSubView(topicId) {
     if (!matchedTopic) return;
 
     // 更新標題
-    document.getElementById('portal-main-title').innerText = `📐 ${matchedTopic.title}`;
-    document.getElementById('portal-sub-title').classList.remove('hidden');
+    document.getElementById('portal-main-title').innerText = `${matchedTopic.title}`;
 
     // 渲染遊戲卡片
     const gamesContainer = document.getElementById('games-container');
@@ -124,8 +123,7 @@ function showSubView(topicId) {
  * 返回主選單視圖
  */
 function showMainView() {
-    document.getElementById('portal-main-title').innerText = '📐 國中數學互動學習館';
-    document.getElementById('portal-sub-title').classList.add('hidden');
+    document.getElementById('portal-main-title').innerText = '國中數學互動學習館';
 
     document.getElementById('sub-view').classList.add('hidden');
     document.getElementById('main-view').classList.remove('hidden');
