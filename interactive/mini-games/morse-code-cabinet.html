@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=810, user-scalable=yes">
+    <title>摩斯密碼解鎖櫃</title>
+    <link rel="stylesheet" href="../../mathematics.css?v=20260916">
+    <script src="../../mathematics.js?v=20260916"></script>
+    <style>
+    /* 讓內容最少維持 810px，小於 810px 時頁面整體出現橫向滾輪 */
+    @media (max-width: 810px) {
+        body {
+            width: 810px;        /* 強制維持 810px 寬度，不隨螢幕變小而變窄 */
+            overflow-x: auto;    /* 超出螢幕範圍時顯示橫向滾輪 */
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="card card-large">
+        <h2 style="margin-top: 0;">五層摩斯密碼玻璃櫃</h2>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px; text-align: left;">房間裡有一個上鎖的五層玻璃櫃 ( 如下圖 )，內裝有 30 小格，有些小格上放置了不同號碼的球，桌上有編號 0 ∼ 9的 10 把鑰匙以及一張摩斯密碼表 ( 如右圖 )，但只有一把鑰匙可以將櫃子打開，請你動動腦，找出正確編號的鑰匙。<br>( 提示：每層隱藏了數字密碼，請依最上層到最下層的順序，找出線索。)</p>
+
+        <!-- 5x6 玻璃櫃區塊 -->
+        <div class="cabinet-container" id="cabinet-grid"></div>
+
+        <!-- 解鎖驗證區 -->
+        <div class="answer-section">
+            <div class="section-header">
+                <h3 style="margin: 0; color: #2d3748;">🔑 解鎖驗證區</h3>
+                <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 4px 8px;" onclick="toggleAnswerMorseTable()">📖 摩斯密碼表</button>
+            </div>
+
+            <!-- 解鎖驗證區獨立展開的摩斯密碼表 -->
+            <div id="answer-morse-table" class="morse-table-box hidden">
+                <b>摩斯密碼對照 (<span class="morse-dash"></span> 質數 / <span class="morse-dot"></span> 合數)</b>
+                <div class="morse-grid-alphabet" id="ans-morse-alphabet"></div>
+                <div class="morse-grid-numbers" id="ans-morse-numbers"></div>
+            </div>
+            
+            <div class="layer-inputs">
+                <div class="layer-item">
+                    <label>最上層數字 (1)：</label>
+                    <input type="number" id="layer1" disabled oninput="checkUnlockState()">
+                </div>
+                <div class="layer-item">
+                    <label>第二層數字 (2)：</label>
+                    <input type="number" id="layer2" disabled oninput="checkUnlockState()">
+                </div>
+                <div class="layer-item">
+                    <label>第三層數字 (3)：</label>
+                    <input type="number" id="layer3" disabled oninput="checkUnlockState()">
+                </div>
+                <div class="layer-item">
+                    <label>第四層數字 (4)：</label>
+                    <input type="number" id="layer4" disabled oninput="checkUnlockState()">
+                </div>
+                <div class="layer-item">
+                    <label>最下層數字 (5)：</label>
+                    <input type="number" id="layer5" disabled oninput="checkUnlockState()">
+                </div>
+            </div>
+
+            <div class="key-section">
+                <label style="font-weight: bold; color: #2b6cb0;">🗝️ 開啟鑰匙編號：</label>
+                <input type="number" id="keyInput" disabled style="width: 100px; padding: 8px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e0; font-weight: bold;">
+            </div>
+
+            <button id="checkBtn" class="btn btn-primary" disabled style="width: 100%; padding: 10px; font-size: 1rem; margin-top: 15px;" onclick="checkAnswers()">驗證答案</button>
+            <div id="unlock-result" style="margin-top: 15px; font-weight: bold; font-size: 1rem; text-align: center;"></div>
+        </div>
+    </div>
+
+    <!-- 填答彈窗 Modal -->
+    <div id="cell-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="section-header">
+                <h3 id="modal-title" style="margin: 0; font-size: 1.1rem;">櫃格填答</h3>
+                <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 4px 8px;" onclick="toggleModalMorseTable()">📖 摩斯密碼表</button>
+            </div>
+
+            <!-- 彈窗內的圖像化摩斯密碼表 -->
+            <div id="modal-morse-table" class="morse-table-box">
+                <b>摩斯密碼對照 (<span class="morse-dash"></span> 質數 / <span class="morse-dot"></span> 合數)</b>
+                <div class="morse-grid-alphabet" id="modal-morse-alphabet"></div>
+                <div class="morse-grid-numbers" id="modal-morse-numbers"></div>
+            </div>
+
+            <div class="modal-balls" id="modal-balls"></div>
+            
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 5px;">1. 依序點擊燈號 ：</p>
+            <div id="modal-morse-preview" class="morse-light" style="justify-content: center; margin-bottom: 10px; min-height: 12px;"></div>
+            
+            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 15px;">
+                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dash')"><span class="morse-dash"></span> 質數</button>
+                <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.9rem;" onclick="addMorseSymbol('dot')"><span class="morse-dot"></span> 合數</button>
+                <button class="btn" style="padding: 6px 10px; background: #E2E8F0; font-size: 0.85rem;" onclick="clearMorseSymbol()">↺ 清除</button>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 5px;">2. 依對照表填入對應字母：</p>
+            <input type="text" id="user-letter-input" maxlength="1" placeholder="字母" style="width: 60px; padding: 6px; text-align: center; font-size: 1.2rem; text-transform: uppercase;">
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-primary" style="flex: 1; padding: 8px;" onclick="saveCellAnswer()">儲存</button>
+                <button class="btn" style="flex: 1; padding: 8px; background: #A0AEC0; color: white;" onclick="closeModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+        const composites = [4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58, 60, 62, 63, 64, 65, 66, 68, 69, 70, 72, 74, 75, 76, 77, 78, 80, 81, 82, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 98, 99];
+
+        const morseDictionary = [
+            { char: 'A', code: '.-' }, { char: 'B', code: '-...' }, { char: 'C', code: '-.-.' }, { char: 'D', code: '-..' },
+            { char: 'E', code: '.' }, { char: 'F', code: '..-.' }, { char: 'G', code: '--.' }, { char: 'H', code: '....' },
+            { char: 'I', code: '..' }, { char: 'J', code: '.---' }, { char: 'K', code: '-.-' }, { char: 'L', code: '.-..' },
+            { char: 'M', code: '--' }, { char: 'N', code: '-.' }, { char: 'O', code: '---' }, { char: 'P', code: '.--.' },
+            { char: 'Q', code: '--.-' }, { char: 'R', code: '.-.' }, { char: 'S', code: '...' }, { char: 'T', code: '-' },
+            { char: 'U', code: '..-' }, { char: 'V', code: '...-' }, { char: 'W', code: '.--' }, { char: 'X', code: '-..-' },
+            { char: 'Y', code: '-.--' }, { char: 'Z', code: '--..' }
+        ];
+
+        const morseNumbers = [
+            { char: '1', code: '.----' }, { char: '2', code: '..---' }, { char: '3', code: '...--' },
+            { char: '4', code: '....-' }, { char: '5', code: '.....' }, { char: '6', code: '-....' },
+            { char: '7', code: '--...' }, { char: '8', code: '---..' }, { char: '9', code: '----.' },
+            { char: '0', code: '-----' }
+        ];
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 嚴格對照原始圖片題目（D = Dash / 質數 / 條，C = Dot / 合數 / 點）
+        const cabinetStructure = [
+            // 第一層：R (.-.), [空], Y (-.--), T (-), F (..-.), O (---)
+            { letter: 'R', pattern: ['C', 'D', 'C'] },
+            { letter: '', pattern: [] },
+            { letter: 'Y', pattern: ['D', 'C', 'D', 'D'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'F', pattern: ['C', 'C', 'D', 'C'] },
+            { letter: 'O', pattern: ['D', 'D', 'D'] },
+
+            // 第二層：H (....), T (-), G (--.), E (.), Y (-.--), I (..)
+            { letter: 'H', pattern: ['C', 'C', 'C', 'C'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'G', pattern: ['D', 'D', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'Y', pattern: ['D', 'C', 'D', 'D'] },
+            { letter: 'I', pattern: ['C', 'C'] },
+
+            // 第三層：L (.-..), E (.), E (.), V (...-), N (-.), E (.)
+            { letter: 'L', pattern: ['C', 'D', 'C', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'V', pattern: ['C', 'C', 'C', 'D'] },
+            { letter: 'N', pattern: ['D', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+
+            // 第四層：R (.-.), T (-), E (.), H (....), E (.), [空]
+            { letter: 'R', pattern: ['C', 'D', 'C'] },
+            { letter: 'T', pattern: ['D'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'H', pattern: ['C', 'C', 'C', 'C'] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: '', pattern: [] },
+
+            // 第五層：E (.), S (...), [空], E (.), N (-.), V (...-)
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'S', pattern: ['C', 'C', 'C'] },
+            { letter: '', pattern: [] },
+            { letter: 'E', pattern: ['C'] },
+            { letter: 'N', pattern: ['D', 'C'] },
+            { letter: 'V', pattern: ['C', 'C', 'C', 'D'] }
+        ];
+
+        // 各層解答的對應預設值
+        const layerAnswers = [40, 80, 11, 3, 7];
+
+        let cabinetData = [];
+        let currentActiveIndex = null;
+        let tempMorse = [];
+        let userState = [];
+
+        function renderMorseHTML(code) {
+            let html = '<span style="display:inline-flex; gap:2px; align-items:center;">';
+            for (let char of code) {
+                if (char === '.') {
+                    html += `<span class="morse-dot"></span>`;
+                } else if (char === '-') {
+                    html += `<span class="morse-dash"></span>`;
+                }
+            }
+            html += '</span>';
+            return html;
+        }
+
+        function buildMorseTables() {
+            const alphaContainers = [document.getElementById('modal-morse-alphabet'), document.getElementById('ans-morse-alphabet')];
+            const numContainers = [document.getElementById('modal-morse-numbers'), document.getElementById('ans-morse-numbers')];
+
+            let alphaHTML = '';
+            morseDictionary.forEach(item => {
+                alphaHTML += `<div class="morse-item"><span>${item.char}:</span>${renderMorseHTML(item.code)}</div>`;
+            });
+
+            let numHTML = '';
+            morseNumbers.forEach(item => {
+                numHTML += `<div class="morse-item"><span>${item.char}:</span>${renderMorseHTML(item.code)}</div>`;
+            });
+
+            alphaContainers.forEach(el => { if(el) el.innerHTML = alphaHTML; });
+            numContainers.forEach(el => { if(el) el.innerHTML = numHTML; });
+        }
+
+        function generateRandomCabinet() {
+            cabinetData = cabinetStructure.map(item => {
+                const balls = item.pattern.map(type => type === 'D' ? getRandom(primes) : getRandom(composites));
+                return { letter: item.letter, balls: balls, pattern: item.pattern };
+            });
+            userState = cabinetData.map(() => ({ letter: '', morse: [] }));
+        }
+
+        // 判斷單一櫃格答案是否正確（英文與摩斯符號均對）
+        function checkCellCorrect(index) {
+            const target = cabinetData[index];
+            const user = userState[index];
+
+            if (target.balls.length === 0) return true; // 空櫃格視為正確
+
+            // 1. 檢查字母
+            if (user.letter !== target.letter) return false;
+
+            // 2. 檢查摩斯符號 (dot代表合數'C'，dash代表質數'D')
+            if (user.morse.length !== target.pattern.length) return false;
+            for (let i = 0; i < target.pattern.length; i++) {
+                const expected = target.pattern[i] === 'D' ? 'dash' : 'dot';
+                if (user.morse[i] !== expected) return false;
+            }
+
+            return true;
+        }
+
+        function initCabinet() {
+            const grid = document.getElementById('cabinet-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            cabinetData.forEach((item, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'letter-box';
+                letterDiv.innerText = userState[index].letter || ' ';
+                cell.appendChild(letterDiv);
+
+                const morseDiv = document.createElement('div');
+                morseDiv.className = 'morse-light';
+                userState[index].morse.forEach(symbol => {
+                    const el = document.createElement('div');
+                    el.className = symbol === 'dot' ? 'morse-dot' : 'morse-dash';
+                    morseDiv.appendChild(el);
+                });
+                cell.appendChild(morseDiv);
+
+                const ballsDiv = document.createElement('div');
+                ballsDiv.className = 'balls-box';
+                item.balls.forEach(num => {
+                    const b = document.createElement('span');
+                    b.className = 'ball';
+                    b.innerText = num;
+                    ballsDiv.appendChild(b);
+                });
+                cell.appendChild(ballsDiv);
+
+                if (item.balls.length > 0) {
+                    cell.style.cursor = 'pointer';
+                    cell.onclick = () => openModal(index);
+                }
+
+                grid.appendChild(cell);
+            });
+
+            checkLayersAndLock();
+        }
+
+        // 檢查各層英文與符號，決定該層數字輸入框解鎖狀態
+        function checkLayersAndLock() {
+            for (let layer = 0; layer < 5; layer++) {
+                let layerCorrect = true;
+                for (let col = 0; col < 6; col++) {
+                    const idx = layer * 6 + col;
+                    if (!checkCellCorrect(idx)) {
+                        layerCorrect = false;
+                        break;
+                    }
+                }
+
+                const inputEl = document.getElementById(`layer${layer + 1}`);
+                if (layerCorrect) {
+                    inputEl.disabled = false;
+                } else {
+                    inputEl.disabled = true;
+                    inputEl.value = ''; // 鎖定時清空輸入
+                }
+            }
+            checkUnlockState();
+        }
+
+        // 檢查層數字與開啟鑰匙編號解鎖狀態
+        function checkUnlockState() {
+            let allLayersReady = true;
+
+            for (let i = 1; i <= 5; i++) {
+                const inputEl = document.getElementById(`layer${i}`);
+                const val = parseInt(inputEl.value) || 0;
+
+                // 輸入框被鎖定，或者輸入答案不正確，則最下方區域無法點選
+                if (inputEl.disabled || val !== layerAnswers[i - 1]) {
+                    allLayersReady = false;
+                    break;
+                }
+            }
+
+            const keyInput = document.getElementById('keyInput');
+            const checkBtn = document.getElementById('checkBtn');
+
+            if (allLayersReady) {
+                keyInput.disabled = false;
+                checkBtn.disabled = false;
+            } else {
+                keyInput.disabled = true;
+                checkBtn.disabled = true;
+                keyInput.value = '';
+            }
+        }
+
+        function toggleModalMorseTable() {
+            document.getElementById('modal-morse-table').classList.toggle('hidden');
+        }
+
+        function toggleAnswerMorseTable() {
+            document.getElementById('answer-morse-table').classList.toggle('hidden');
+        }
+
+        function openModal(index) {
+            currentActiveIndex = index;
+            const data = cabinetData[index];
+            
+            document.getElementById('modal-title').innerText = `櫃格填答 (#${index + 1})`;
+            const ballsContainer = document.getElementById('modal-balls');
+            ballsContainer.innerHTML = '';
+            data.balls.forEach(b => {
+                const span = document.createElement('span');
+                span.className = 'ball';
+                span.innerText = b;
+                ballsContainer.appendChild(span);
+            });
+
+            tempMorse = [...userState[index].morse];
+            renderModalMorsePreview();
+
+            document.getElementById('user-letter-input').value = userState[index].letter;
+            document.getElementById('cell-modal').classList.remove('hidden');
+        }
+
+        function addMorseSymbol(type) {
+            const maxBalls = cabinetData[currentActiveIndex].balls.length;
+            if (tempMorse.length < maxBalls) {
+                tempMorse.push(type);
+                renderModalMorsePreview();
+            }
+        }
+
+        function clearMorseSymbol() {
+            tempMorse = [];
+            renderModalMorsePreview();
+        }
+
+        function renderModalMorsePreview() {
+            const container = document.getElementById('modal-morse-preview');
+            container.innerHTML = '';
+            tempMorse.forEach(symbol => {
+                const el = document.createElement('div');
+                el.className = symbol === 'dot' ? 'morse-dot' : 'morse-dash';
+                container.appendChild(el);
+            });
+        }
+
+        function saveCellAnswer() {
+            if (currentActiveIndex !== null) {
+                const val = document.getElementById('user-letter-input').value.trim().toUpperCase();
+                userState[currentActiveIndex].letter = val;
+                userState[currentActiveIndex].morse = [...tempMorse];
+                initCabinet();
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('cell-modal').classList.add('hidden');
+            document.getElementById('modal-morse-table').classList.remove('hidden');
+            currentActiveIndex = null;
+            tempMorse = [];
+        }
+
+        function checkAnswers() {
+            const l1 = parseInt(document.getElementById('layer1').value) || 0;
+            const l2 = parseInt(document.getElementById('layer2').value) || 0;
+            const l3 = parseInt(document.getElementById('layer3').value) || 0;
+            const l4 = parseInt(document.getElementById('layer4').value) || 0;
+            const l5 = parseInt(document.getElementById('layer5').value) || 0;
+            const keyVal = parseInt(document.getElementById('keyInput').value) || 0;
+
+            const resultText = document.getElementById('unlock-result');
+
+            const isLayersCorrect = (l1 === 40 && l2 === 80 && l3 === 11 && l4 === 3 && l5 === 7);
+            const isKeyCorrect = (keyVal === 2);
+
+            if (isLayersCorrect && isKeyCorrect) {
+                resultText.innerText = '🎉 太棒了！五層線索與鑰匙編號【2】完全正確，順利解鎖！';
+                resultText.style.color = '#2ECC71';
+            } else if (!isLayersCorrect) {
+                resultText.innerText = '❌ 每層線索數字有誤，請再重新確認摩斯單字拼出的數字！';
+                resultText.style.color = '#E74C3C';
+            } else {
+                resultText.innerText = '❌ 每層數字對了，但鑰匙編號不正確喔！';
+                resultText.style.color = '#E74C3C';
+            }
+        }
+
+        window.onload = () => {
+            buildMorseTables();
+            generateRandomCabinet();
+            initCabinet();
+        };
+    </script>
+</body>
+</html>

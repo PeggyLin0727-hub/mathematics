@@ -3,21 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國中數學互動學習遊戲總入口 - Mathematics Games Portal</title>
-    <link rel="stylesheet" href="mathematics.css?v=202609151625">
-    <script src="mathematics.js?v=20260915"></script>
+    <title>國中數學互動學習館 - Mathematics Games Portal</title>
+    <link rel="stylesheet" href="mathematics.css?v=20260916">
+    <!-- 引入 QRCode.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="mathematics.js?v=20260916"></script>
 </head>
 <body>
 
     <div class="portal-container">
+        <!-- 頂部頁籤標題 -->
         <div style="text-align: center; color: #ffffff; margin-bottom: 10px;">
-            <h1 style="color: #ffffff; font-size: 2.2rem; margin-bottom: 8px;">國中數學互動學習館</h1>
+            <h1 id="portal-main-title" style="color: #ffffff; font-size: 2.2rem; margin-bottom: 8px;">📐 國中數學互動學習館</h1>
+            <p id="portal-sub-title" style="color: #a0aec0; font-size: 1rem;" class="hidden">請選擇要挑戰的互動遊戲</p>
         </div>
 
-        <!-- 動態渲染各單元入口列表 -->
-        <div id="portal-content" style="width: 100%;"></div>
+        <!-- 1. 主視圖：年級與主題列表 -->
+        <div id="main-view" style="width: 100%;">
+            <div id="portal-content" style="width: 100%;"></div>
+        </div>
+
+        <!-- 2. 子視圖：指定單元的遊戲列表 -->
+        <div id="sub-view" style="width: 100%;" class="hidden">
+            <div style="margin-bottom: 15px; width: 100%;">
+                <button class="btn btn-secondary" onclick="showMainView()" style="padding: 8px 16px; font-size: 0.95rem;">
+                    ⬅ 返回主目錄
+                </button>
+            </div>
+            <div id="games-container" style="width: 100%; display: flex; flex-direction: column; gap: 15px;"></div>
+        </div>
     </div>
 
-    <script>loadMainPortal();</script>
+    <script>
+        // 初始化入口網
+        document.addEventListener("DOMContentLoaded", () => {
+            initPortal();
+        });
+    </script>
 </body>
 </html>
