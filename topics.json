@@ -11,7 +11,7 @@
             "id": "prime-challenge",
             "title": "⚡ 質數大挑戰",
             "desc": "測試你的數字反應速度！判斷 1 ~ 100 內的數字是質數還是合數，提供基本與限時競速雙模式。",
-            "url": "interactive/mini-games/prime-challenge.html",
+            "url": "interactive/mini-games/prime-challenge-Ver2.html",
             "actionText": "開始挑戰 ➔"
           },
           {
