@@ -18,7 +18,8 @@
             "id": "morse-code-cabinet",
             "title": "🔐 摩斯密碼解鎖櫃",
             "desc": "結合質數判斷與摩斯密碼對照！觀察 5x6 玻璃櫃中的黃球數字，破解五層線索與鑰匙編號。",
-            "url": "interactive/mini-games/morse-code-cabinet-Ver2.html",
+            "url": "interactive/mini-games/morse-code-cabinet.html",
+            "randomUrl": "interactive/mini-games/morse-code-cabinet-Ver2.html",
             "actionText": "開啟解密 ➔"
           }
         ]
