@@ -91,33 +91,29 @@ function showSubView(topicId) {
     if (matchedTopic.games && matchedTopic.games.length > 0) {
         matchedTopic.games.forEach(game => {
             const hasRandom = !!game.randomUrl;
-            
+
             gamesHtml += `
-                <div class="nav-card" style="position: relative;">
+                <div class="nav-card" style="position: relative;" data-fixed-url="${game.url}" data-random-url="${game.randomUrl || ''}">
                     ${hasRandom ? `
-                        <!-- 左上角切換按鈕：拿掉所有圖示與「版」字 -->
-                        <div style="position: absolute; top: 12px; left: 15px; display: flex; gap: 6px; z-index: 10;">
-                            <a href="${game.url}" style="background: #2C3E50; color: #fff; border: 1px solid #4A90E2; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none;">
-                                固定
-                            </a>
-                            <a href="${game.randomUrl}" style="background: #E67E22; color: #fff; border: 1px solid #D35400; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none;">
-                                隨機
-                            </a>
+                        <!-- 右上角版本切換按鈕 -->
+                        <div class="card-version-switch">
+                            <button class="version-btn fixed active" onclick="switchCardVersion(this, 'fixed')">固定</button>
+                            <button class="version-btn random" onclick="switchCardVersion(this, 'random')">隨機</button>
                         </div>
                     ` : ''}
-                    
-                    <a href="${game.url}" class="nav-info-link" style="${hasRandom ? 'margin-top: 22px;' : ''}">
+
+                    <a href="${game.url}" class="nav-info-link game-main-link">
                         <div class="nav-info">
                             <h2>${game.title}</h2>
                             <p>${game.desc}</p>
                         </div>
                     </a>
                     <div class="nav-actions">
-                        <button class="qr-btn" onclick="showQRCodeModal('${game.url}', '${game.title}')" title="顯示 QR Code">
+                        <button class="qr-btn game-qr-btn" onclick="showQRCodeModal(this.closest('.nav-card').querySelector('.game-main-link').href, '${game.title}')" title="顯示 QR Code">
                             <i class="qr-icon"></i>
                             <span>QR</span>
                         </button>
-                        <a href="${game.url}" class="nav-arrow">${game.actionText || '進入 ➔'}</a>
+                        <a href="${game.url}" class="nav-arrow game-action-link">${game.actionText || '進入 ➔'}</a>
                     </div>
                 </div>
             `;
@@ -141,6 +137,31 @@ function showMainView() {
 
     document.getElementById('sub-view').classList.add('hidden');
     document.getElementById('main-view').classList.remove('hidden');
+}
+
+/**
+ * 切換單張卡片的版本（固定 / 隨機），並同步更新標題連結、QR Code 與下方按鈕
+ * @param {HTMLElement} btnEl - 被點擊的按鈕
+ * @param {string} type - 'fixed' 或 'random'
+ */
+function switchCardVersion(btnEl, type) {
+    const card = btnEl.closest('.nav-card');
+    const fixedUrl = card.getAttribute('data-fixed-url');
+    const randomUrl = card.getAttribute('data-random-url');
+    const targetUrl = (type === 'fixed') ? fixedUrl : randomUrl;
+
+    // 1. 切換按鈕的 active 狀態樣式
+    const buttons = card.querySelectorAll('.version-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+
+    // 2. 同步更新上方主標題連結
+    const mainLink = card.querySelector('.game-main-link');
+    if (mainLink) mainLink.href = targetUrl;
+
+    // 3. 同步更新右下角「開啟解密 ➔」連結
+    const actionLink = card.querySelector('.game-action-link');
+    if (actionLink) actionLink.href = targetUrl;
 }
 
 /* ==========================================
