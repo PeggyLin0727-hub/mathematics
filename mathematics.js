@@ -90,9 +90,23 @@ function showSubView(topicId) {
 
     if (matchedTopic.games && matchedTopic.games.length > 0) {
         matchedTopic.games.forEach(game => {
+            const hasRandom = !!game.randomUrl;
+            
             gamesHtml += `
-                <div class="nav-card">
-                    <a href="${game.url}" class="nav-info-link">
+                <div class="nav-card" style="position: relative;">
+                    ${hasRandom ? `
+                        <!-- 左上角切換按鈕：拿掉所有圖示與「版」字 -->
+                        <div style="position: absolute; top: 12px; left: 15px; display: flex; gap: 6px; z-index: 10;">
+                            <a href="${game.url}" style="background: #2C3E50; color: #fff; border: 1px solid #4A90E2; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none;">
+                                固定
+                            </a>
+                            <a href="${game.randomUrl}" style="background: #E67E22; color: #fff; border: 1px solid #D35400; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-decoration: none;">
+                                隨機
+                            </a>
+                        </div>
+                    ` : ''}
+                    
+                    <a href="${game.url}" class="nav-info-link" style="${hasRandom ? 'margin-top: 22px;' : ''}">
                         <div class="nav-info">
                             <h2>${game.title}</h2>
                             <p>${game.desc}</p>
