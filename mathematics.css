@@ -637,3 +637,45 @@ input:disabled, button:disabled {
 .modal-close-btn:hover {
     color: #333;
 }
+
+/* ==========================================
+   遊戲卡片右上角版本切換切換鈕
+   ========================================== */
+.card-version-switch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
+
+.version-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    opacity: 0.5; /* 未選取時呈現半透明 */
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.version-btn.active {
+    opacity: 1; /* 選取時完全不透明並凸顯色彩 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.version-btn.fixed.active {
+    background: #2C3E50;
+    color: #fff;
+    border-color: #4A90E2;
+}
+
+.version-btn.random.active {
+    background: #E67E22;
+    color: #fff;
+    border-color: #D35400;
+}
