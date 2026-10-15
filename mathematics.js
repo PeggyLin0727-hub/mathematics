@@ -93,12 +93,11 @@ function showSubView(topicId) {
             const hasRandom = !!game.randomUrl;
 
             gamesHtml += `
-                <div class="nav-card" style="position: relative;" data-fixed-url="${game.url}" data-random-url="${game.randomUrl || ''}">
+                <div class="nav-card" style="position: relative;" data-fixed-url="${game.url}" data-random-url="${game.randomUrl || ''}" data-current-mode="fixed">
                     ${hasRandom ? `
-                        <!-- 右上角版本切換按鈕 -->
+                        <!-- 右上角單一切換按鈕 -->
                         <div class="card-version-switch">
-                            <button class="version-btn fixed active" onclick="switchCardVersion(this, 'fixed')">固定</button>
-                            <button class="version-btn random" onclick="switchCardVersion(this, 'random')">隨機</button>
+                            <button class="version-toggle-btn fixed" onclick="toggleCardVersion(this)">固定</button>
                         </div>
                     ` : ''}
 
@@ -140,28 +139,35 @@ function showMainView() {
 }
 
 /**
- * 切換單張卡片的版本（固定 / 隨機），並同步更新標題連結、QR Code 與下方按鈕
+ * 點擊右上角按鈕，在固定與隨機之間即時切換
  * @param {HTMLElement} btnEl - 被點擊的按鈕
- * @param {string} type - 'fixed' 或 'random'
  */
-function switchCardVersion(btnEl, type) {
+function toggleCardVersion(btnEl) {
     const card = btnEl.closest('.nav-card');
     const fixedUrl = card.getAttribute('data-fixed-url');
     const randomUrl = card.getAttribute('data-random-url');
-    const targetUrl = (type === 'fixed') ? fixedUrl : randomUrl;
+    const currentMode = card.getAttribute('data-current-mode');
 
-    // 1. 切換按鈕的 active 狀態樣式
-    const buttons = card.querySelectorAll('.version-btn');
-    buttons.forEach(b => b.classList.remove('active'));
-    btnEl.classList.add('active');
-
-    // 2. 同步更新上方主標題連結
     const mainLink = card.querySelector('.game-main-link');
-    if (mainLink) mainLink.href = targetUrl;
-
-    // 3. 同步更新右下角「開啟解密 ➔」連結
     const actionLink = card.querySelector('.game-action-link');
-    if (actionLink) actionLink.href = targetUrl;
+
+    if (currentMode === 'fixed') {
+        // 切換成隨機版
+        card.setAttribute('data-current-mode', 'random');
+        btnEl.innerText = '隨機';
+        btnEl.className = 'version-toggle-btn random';
+        
+        if (mainLink) mainLink.href = randomUrl;
+        if (actionLink) actionLink.href = randomUrl;
+    } else {
+        // 切換成固定版
+        card.setAttribute('data-current-mode', 'fixed');
+        btnEl.innerText = '固定';
+        btnEl.className = 'version-toggle-btn fixed';
+        
+        if (mainLink) mainLink.href = fixedUrl;
+        if (actionLink) actionLink.href = fixedUrl;
+    }
 }
 
 /* ==========================================
